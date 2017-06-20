@@ -1,0 +1,34 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+`count-up`
+
+
+@demo demo/index.html
+-->
+
+<dom-module id="count-up">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]!</h2>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'count-up',
+
+      properties: {
+        prop1: {
+          type: String,
+          value: 'count-up',
+        },
+      },
+
+    });
+  </script>
+</dom-module>

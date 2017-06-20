@@ -1,4 +1,6 @@
-<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/polymer.html" />
+<link rel="import" href="../paper-styles/color.html" />
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html" />
 
 <!--
 `count-up`
@@ -9,26 +11,145 @@
 
 <dom-module id="count-up">
   <template>
-    <style>
+    <style >
       :host {
-        display: block;
+        @apply(--layout-inline);
+        line-height: 1;
+      }
+
+      #container {
+        font-weight: bold;
+        @apply(--count-up-container);
       }
     </style>
-    <h2>Hello [[prop1]]!</h2>
+
+    <span id="container"></span>
   </template>
 
+  <script type="text/javascript" src="../countUp.js/countUp.js"></script>
   <script>
-    Polymer({
+    (function () {
+      'use strict';
+      Polymer({
+        is: 'count-up',
 
-      is: 'count-up',
+        properties: {
 
-      properties: {
-        prop1: {
-          type: String,
-          value: 'count-up',
+          start: {
+            type: Boolean,
+            value: false,
+            observer: "_startChaneged"
+          },
+
+          //start
+          from: {
+            type: Number,
+            value: 0
+          },
+
+          //end
+          value: {
+            type: Number,
+            value: 1000,
+            observer: "_updateChaneged"
+          },
+
+          decimalCount: {
+            type: Number,
+            value: 0
+          },
+
+          decimalCharacter: {
+            type: String,
+            value: '.'
+          },
+
+          duration: {
+            type: Number,
+            value: 2
+          },
+
+          easing: {
+            type: Boolean,
+            value: true
+          },
+
+          grouping: {
+            type: Boolean,
+            value: true
+          },
+
+          separator: {
+            type: String,
+            value: ','
+          },
+
+          prefixString: {
+            type: String,
+            value: ''
+          },
+
+          suffixString: {
+            type: String,
+            value: ''
+          }
         },
-      },
 
-    });
+        _makeCountUp: function () {
+          // this._log({
+          //   start: this.from,
+          //   value: this.value,
+          //   decimalCount: this.decimalCount,
+          //   duration: this.duration,
+          //   useEasing: this.easing,
+          //   useGrouping: this.grouping,
+          //   separator: this.separator,
+          //   decimal: this.decimalCharacter,
+          //   prefix: this.prefixString,
+          //   suffix: this.suffixString,
+          // });
+
+          if (this.countup) {
+            delete this.countup; // clean memory
+          }
+
+          this.countup = new CountUp(this.$.container, this.from, this.value, this.decimalCount, this.duration, {
+            useEasing: this.easing,
+            useGrouping: this.grouping,
+            separator: this.separator,
+            decimal: this.decimalCharacter,
+            prefix: this.prefixString,
+            suffix: this.suffixString,
+          });
+        },
+
+        ready: function () {
+          this._makeCountUp();
+          if (this.start) this.countup.start();
+        },
+
+        _startChaneged: function (value) {
+          if (!this.countup) return;
+
+          if (value) {
+            // this._log("count-up start");
+            this.countup.start();
+          }
+          else {
+            // this._log("count-up reset");
+            this.countup.reset();
+          }
+        },
+
+        _updateChaneged: function (value) {
+          if (!this.countup) return;
+
+          if (value) {
+            // this._log("count-up value updateed to ", value);
+            this.countup.update(value);
+          }
+        }
+      });
+    })();
   </script>
 </dom-module>
